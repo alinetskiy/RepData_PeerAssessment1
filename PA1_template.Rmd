@@ -65,7 +65,9 @@ dataFixed$weekday <- weekdays(dataFixed$date)
 dataFixed$weekend <- "weekday"
 dataFixed[dataFixed$weekday %in% c("Saturday","Sunday"),"weekend"] <- "weekend"
 dataFixed$weekend <- factor(dataFixed$weekend)
-avgDays <-aggregate(dataFixed$steps, list(interval=dataFixed$interval, weekend = dataFixed$weekend), mean)
+avgDays <-aggregate(dataFixed$steps, 
+                    list(interval=dataFixed$interval, 
+                         weekend = dataFixed$weekend), mean)
 g <- ggplot(avgDays, aes(interval, x))
 g <- g + geom_line(stat="identity")
 g <- g+labs( x="interval", y="steps")

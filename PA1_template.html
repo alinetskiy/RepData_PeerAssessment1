@@ -260,7 +260,9 @@ dataFixed$weekday &lt;- weekdays(dataFixed$date)
 dataFixed$weekend &lt;- &quot;weekday&quot;
 dataFixed[dataFixed$weekday %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;),&quot;weekend&quot;] &lt;- &quot;weekend&quot;
 dataFixed$weekend &lt;- factor(dataFixed$weekend)
-avgDays &lt;-aggregate(dataFixed$steps, list(interval=dataFixed$interval, weekend = dataFixed$weekend), mean)
+avgDays &lt;-aggregate(dataFixed$steps, 
+                    list(interval=dataFixed$interval, 
+                         weekend = dataFixed$weekend), mean)
 g &lt;- ggplot(avgDays, aes(interval, x))
 g &lt;- g + geom_line(stat=&quot;identity&quot;)
 g &lt;- g+labs( x=&quot;interval&quot;, y=&quot;steps&quot;)
