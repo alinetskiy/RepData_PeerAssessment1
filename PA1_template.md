@@ -7,26 +7,31 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r load_preprocess}
+
+```r
 data <- read.csv('data/activity.csv')
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r steps_per_day}
+
+```r
 daily <- aggregate(data$steps, by=list(data$date), FUN=sum)
 meanSteps <- mean(daily$x, na.rm=TRUE)
 medianSteps <- median(daily$x, na.rm=TRUE)
 hist(daily$x, breaks=10, col="blue", xlab="Steps per day", main="Steps per day")
 ```
 
+![plot of chunk steps_per_day](figure/steps_per_day-1.png) 
 
-On average, a person did `r sprintf("%.2f",meanSteps)` steps per day, with median value being `r medianSteps`.
+
+On average, a person did 10766.19 steps per day, with median value being 10765.
 
 
 ## What is the average daily activity pattern?
 
-```{r daily_activity}
+
+```r
 avgInt <- aggregate(steps ~ interval, data, mean )
 maxAvg <- avgInt[avgInt$steps==max(avgInt$steps),]
 plot(avgInt$interval, avgInt$steps,type="l",
@@ -34,13 +39,16 @@ plot(avgInt$interval, avgInt$steps,type="l",
      xlab="Interval", ylab="Steps")
 ```
 
-On average, the most steps (`r sprintf("%.2f",maxAvg$steps)`) were done in the interval number `r maxAvg$interval`
+![plot of chunk daily_activity](figure/daily_activity-1.png) 
+
+On average, the most steps (206.17) were done in the interval number 835
 
 ## Imputing missing values
 
-The dataset has `r nrow(data[is.na(data$steps),])` rows with missing values for number of steps. To fix it, the missing values will be replaced with the average values for the corresponding time interval.
+The dataset has 2304 rows with missing values for number of steps. To fix it, the missing values will be replaced with the average values for the corresponding time interval.
 
-```{r missing_data2}
+
+```r
 dataFixed <- merge(data, avgInt, by=c("interval"))
 names(dataFixed) = c('interval', 'steps', 'date', 'avgSteps')
 dataFixed$avgSteps <- round(dataFixed$avgSteps)
@@ -52,13 +60,15 @@ medianSteps <- median(daily$x)
 hist(daily$x, breaks=10, col="blue",
      xlab="Steps per day", 
      main="Steps per day (missing values fixed)")
-
 ```
 
-On average, a person did `r sprintf("%.2f",meanSteps)` steps per day, with median value being `r sprintf("%.2f",medianSteps)`. As we can see, imputing missing values only slightly affected those values.
+![plot of chunk missing_data2](figure/missing_data2-1.png) 
+
+On average, a person did 10765.64 steps per day, with median value being 10762.00. As we can see, imputing missing values only slightly affected those values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-``` {r weekdays}
+
+```r
 library(ggplot2)
 dataFixed$date <- as.Date(dataFixed$date)
 dataFixed$weekday <- weekdays(dataFixed$date)
@@ -73,3 +83,5 @@ g <- g+ ggtitle("Steps on weekdays and weekends")
 g <- g  + facet_grid(weekend ~.)
 print(g) 
 ```
+
+![plot of chunk weekdays](figure/weekdays-1.png) 
